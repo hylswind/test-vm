@@ -11,8 +11,8 @@ trap error_handler ERR
 # prepare nvme device
 if [ -e /dev/nvme1n1 ]; then
     mkfs -t xfs /dev/nvme1n1
-    mkdir /instance-store
-    mount /dev/nvme1n1 /instance-store
+    mkdir /mnt/instance-store
+    mount /dev/nvme1n1 /mnt/instance-store
 else
     echo "/dev/nvme1n1 does not exist."
     false
@@ -42,14 +42,16 @@ if [ $CONFIG_USE_GPU == "true" ]; then
   dnf install -y nvidia-container-toolkit
 fi
 
-# install docker images
+# install docker
 dnf install -y docker
-nvidia-ctk runtime configure --runtime=docker
+
+mv /var/lib/docker /mnt/instance-store/docker
+ln -s /mnt/instance-store/docker /var/lib/docker
 
 if [ $CONFIG_USE_GPU == "true" ]; then
   nvidia-ctk runtime configure --runtime=docker
 fi
 
-systemctl restart docker
+systemctl start docker
 
-# Change the container storage to instance store
+docker info | grep "Docker Root Dir"
