@@ -23,4 +23,5 @@ fi
 METADATA_TOKEN = curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"
 VSE_CONFIG = curl -s -H "X-aws-ec2-metadata-token: $METADATA_TOKEN" http://169.254.169.254/latest/user-data | sed -n '/<<COMMENT/,/COMMENT/p' | sed '1d;$d'
 
-echo $VSE_CONFIG /home/ec2-user/instance-store/config.json
+echo $VSE_CONFIG
+echo "Test Done"
